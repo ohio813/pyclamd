@@ -1,0 +1,481 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module pyclamd</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pyclamd</strong></big></big> (version 0.3.1)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/xael/ESPACE_KM/python/pyclamd/pyclamd.py">/home/xael/ESPACE_KM/python/pyclamd/pyclamd.py</a></font></td></tr></table>
+    <p><tt>pyclamd.py<br>
+&nbsp;<br>
+Author&nbsp;:&nbsp;Alexandre&nbsp;Norman&nbsp;-&nbsp;norman()xael.org<br>
+Contributors&nbsp;:<br>
+&nbsp;&nbsp;Philippe&nbsp;Lagadec&nbsp;-&nbsp;philippe.lagadec()laposte.net<br>
+&nbsp;&nbsp;Thomas&nbsp;Kastner&nbsp;-&nbsp;tk()underground8.com<br>
+Licence&nbsp;:&nbsp;LGPL<br>
+&nbsp;<br>
+Usage&nbsp;:<br>
+&nbsp;<br>
+Test&nbsp;strings&nbsp;:<br>
+^^^^^^^^^^^^<br>
+&nbsp;<br>
+&gt;&gt;&gt;&nbsp;import&nbsp;pyclamd<br>
+&gt;&gt;&gt;&nbsp;cd&nbsp;=&nbsp;pyclamd.<a href="#ClamdUnixSocket">ClamdUnixSocket</a>()<br>
+&gt;&gt;&gt;&nbsp;try:<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;test&nbsp;if&nbsp;server&nbsp;is&nbsp;reachable<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cd.ping()<br>
+...&nbsp;except&nbsp;pyclamd.<a href="#ConnectionError">ConnectionError</a>:<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;if&nbsp;failed,&nbsp;test&nbsp;for&nbsp;network&nbsp;socket<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cd&nbsp;=&nbsp;pyclamd.<a href="#ClamdNetworkSocket">ClamdNetworkSocket</a>()<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try:<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cd.ping()<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;except&nbsp;pyclamd.<a href="#ConnectionError">ConnectionError</a>:<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;<a href="exceptions.html#ValueError">ValueError</a>('could&nbsp;not&nbsp;connect&nbsp;to&nbsp;clamd&nbsp;server&nbsp;either&nbsp;by&nbsp;unix&nbsp;or&nbsp;network&nbsp;socket')<br>
+True<br>
+&gt;&gt;&gt;&nbsp;print(cd.version().split()[0])<br>
+ClamAV<br>
+&gt;&gt;&gt;&nbsp;print(cd.reload())<br>
+RELOADING<br>
+&gt;&gt;&gt;&nbsp;print(cd.stats().split()[0])<br>
+POOLS:<br>
+&gt;&gt;&gt;&nbsp;void&nbsp;=&nbsp;open('/tmp/EICAR','w').write(cd.EICAR())<br>
+&gt;&gt;&gt;&nbsp;void&nbsp;=&nbsp;open('/tmp/NO_EICAR','w').write('no&nbsp;virus&nbsp;in&nbsp;this&nbsp;file')<br>
+&gt;&gt;&gt;&nbsp;cd.scan_file('/tmp/EICAR')<br>
+{'/tmp/EICAR':&nbsp;('FOUND',&nbsp;'Eicar-Test-Signature')}<br>
+&gt;&gt;&gt;&nbsp;cd.scan_file('/tmp/NO_EICAR')&nbsp;is&nbsp;None<br>
+True<br>
+&gt;&gt;&gt;&nbsp;cd.scan_stream(cd.EICAR())<br>
+{'stream':&nbsp;('FOUND',&nbsp;'Eicar-Test-Signature')}</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="base64.html">base64</a><br>
+<a href="socket.html">socket</a><br>
+</td><td width="25%" valign=top><a href="string.html">string</a><br>
+<a href="struct.html">struct</a><br>
+</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
+<a href="types.html">types</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="exceptions.html#ValueError">exceptions.ValueError</a>(<a href="exceptions.html#StandardError">exceptions.StandardError</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="pyclamd.html#BufferTooLongError">BufferTooLongError</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="pyclamd.html#_ClamdGeneric">_ClamdGeneric</a>(<a href="__builtin__.html#object">__builtin__.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="pyclamd.html#ClamdNetworkSocket">ClamdNetworkSocket</a>
+</font></dt><dt><font face="helvetica, arial"><a href="pyclamd.html#ClamdUnixSocket">ClamdUnixSocket</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="socket.html#error">socket.error</a>(<a href="exceptions.html#IOError">exceptions.IOError</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="pyclamd.html#ConnectionError">ConnectionError</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BufferTooLongError">class <strong>BufferTooLongError</strong></a>(<a href="exceptions.html#ValueError">exceptions.ValueError</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;for&nbsp;errors&nbsp;with&nbsp;clamd&nbsp;using&nbsp;INSTREAM&nbsp;with&nbsp;a&nbsp;buffer&nbsp;lenght&nbsp;&gt;&nbsp;StreamMaxLength&nbsp;in&nbsp;/etc/clamav/clamd.conf<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="pyclamd.html#BufferTooLongError">BufferTooLongError</a></dd>
+<dd><a href="exceptions.html#ValueError">exceptions.ValueError</a></dd>
+<dd><a href="exceptions.html#StandardError">exceptions.StandardError</a></dd>
+<dd><a href="exceptions.html#Exception">exceptions.Exception</a></dd>
+<dd><a href="exceptions.html#BaseException">exceptions.BaseException</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="exceptions.html#ValueError">exceptions.ValueError</a>:<br>
+<dl><dt><a name="BufferTooLongError-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#BufferTooLongError-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="exceptions.html#ValueError">exceptions.ValueError</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#BufferTooLongError-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><a name="BufferTooLongError-__delattr__"><strong>__delattr__</strong></a>(...)</dt><dd><tt>x.<a href="#BufferTooLongError-__delattr__">__delattr__</a>('name')&nbsp;&lt;==&gt;&nbsp;del&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="BufferTooLongError-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#BufferTooLongError-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="BufferTooLongError-__getitem__"><strong>__getitem__</strong></a>(...)</dt><dd><tt>x.<a href="#BufferTooLongError-__getitem__">__getitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;x[y]</tt></dd></dl>
+
+<dl><dt><a name="BufferTooLongError-__getslice__"><strong>__getslice__</strong></a>(...)</dt><dd><tt>x.<a href="#BufferTooLongError-__getslice__">__getslice__</a>(i,&nbsp;j)&nbsp;&lt;==&gt;&nbsp;x[i:j]<br>
+&nbsp;<br>
+Use&nbsp;of&nbsp;negative&nbsp;indices&nbsp;is&nbsp;not&nbsp;supported.</tt></dd></dl>
+
+<dl><dt><a name="BufferTooLongError-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="BufferTooLongError-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#BufferTooLongError-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
+
+<dl><dt><a name="BufferTooLongError-__setattr__"><strong>__setattr__</strong></a>(...)</dt><dd><tt>x.<a href="#BufferTooLongError-__setattr__">__setattr__</a>('name',&nbsp;value)&nbsp;&lt;==&gt;&nbsp;x.name&nbsp;=&nbsp;value</tt></dd></dl>
+
+<dl><dt><a name="BufferTooLongError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="BufferTooLongError-__str__"><strong>__str__</strong></a>(...)</dt><dd><tt>x.<a href="#BufferTooLongError-__str__">__str__</a>()&nbsp;&lt;==&gt;&nbsp;str(x)</tt></dd></dl>
+
+<dl><dt><a name="BufferTooLongError-__unicode__"><strong>__unicode__</strong></a>(...)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+<dl><dt><strong>message</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ClamdNetworkSocket">class <strong>ClamdNetworkSocket</strong></a>(<a href="pyclamd.html#_ClamdGeneric">_ClamdGeneric</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;for&nbsp;using&nbsp;clamd&nbsp;with&nbsp;a&nbsp;network&nbsp;socket<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="pyclamd.html#ClamdNetworkSocket">ClamdNetworkSocket</a></dd>
+<dd><a href="pyclamd.html#_ClamdGeneric">_ClamdGeneric</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ClamdNetworkSocket-__init__"><strong>__init__</strong></a>(self, host<font color="#909090">='127.0.0.1'</font>, port<font color="#909090">=3310</font>, timeout<font color="#909090">=None</font>)</dt><dd><tt>class&nbsp;initialisation<br>
+&nbsp;<br>
+host&nbsp;(string)&nbsp;:&nbsp;hostname&nbsp;or&nbsp;ip&nbsp;address<br>
+port&nbsp;(int)&nbsp;:&nbsp;TCP&nbsp;port<br>
+timeout&nbsp;(float&nbsp;or&nbsp;None)&nbsp;:&nbsp;socket&nbsp;timeout</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="pyclamd.html#_ClamdGeneric">_ClamdGeneric</a>:<br>
+<dl><dt><a name="ClamdNetworkSocket-EICAR"><strong>EICAR</strong></a>(self)</dt><dd><tt>returns&nbsp;Eicar&nbsp;test&nbsp;string</tt></dd></dl>
+
+<dl><dt><a name="ClamdNetworkSocket-contscan_file"><strong>contscan_file</strong></a>(self, file)</dt><dd><tt>Scan&nbsp;a&nbsp;file&nbsp;or&nbsp;directory&nbsp;given&nbsp;by&nbsp;filename<br>
+Do&nbsp;not&nbsp;stop&nbsp;on&nbsp;<a href="socket.html#error">error</a>&nbsp;or&nbsp;virus&nbsp;found.<br>
+Scan&nbsp;with&nbsp;archive&nbsp;support&nbsp;enabled.<br>
+&nbsp;<br>
+file&nbsp;(string):&nbsp;filename&nbsp;or&nbsp;directory&nbsp;(MUST&nbsp;BE&nbsp;ABSOLUTE&nbsp;PATH&nbsp;!)<br>
+&nbsp;<br>
+return&nbsp;either&nbsp;:<br>
+&nbsp;&nbsp;-&nbsp;(dict):&nbsp;{filename1:&nbsp;('FOUND',&nbsp;'virusname'),&nbsp;filename2:&nbsp;('ERROR',&nbsp;'reason')}<br>
+&nbsp;&nbsp;-&nbsp;None:&nbsp;if&nbsp;no&nbsp;virus&nbsp;found<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdNetworkSocket-multiscan_file"><strong>multiscan_file</strong></a>(self, file)</dt><dd><tt>Scan&nbsp;a&nbsp;file&nbsp;or&nbsp;directory&nbsp;given&nbsp;by&nbsp;filename&nbsp;using&nbsp;multiple&nbsp;threads&nbsp;(faster&nbsp;on&nbsp;SMP&nbsp;machines).<br>
+Do&nbsp;not&nbsp;stop&nbsp;on&nbsp;<a href="socket.html#error">error</a>&nbsp;or&nbsp;virus&nbsp;found.<br>
+Scan&nbsp;with&nbsp;archive&nbsp;support&nbsp;enabled.<br>
+&nbsp;<br>
+file&nbsp;(string):&nbsp;filename&nbsp;or&nbsp;directory&nbsp;(MUST&nbsp;BE&nbsp;ABSOLUTE&nbsp;PATH&nbsp;!)<br>
+&nbsp;<br>
+return&nbsp;either&nbsp;:<br>
+&nbsp;&nbsp;-&nbsp;(dict):&nbsp;{filename1:&nbsp;('FOUND',&nbsp;'virusname'),&nbsp;filename2:&nbsp;('ERROR',&nbsp;'reason')}<br>
+&nbsp;&nbsp;-&nbsp;None:&nbsp;if&nbsp;no&nbsp;virus&nbsp;found<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdNetworkSocket-ping"><strong>ping</strong></a>(self)</dt><dd><tt>Send&nbsp;a&nbsp;PING&nbsp;to&nbsp;the&nbsp;clamav&nbsp;server,&nbsp;which&nbsp;should&nbsp;reply<br>
+by&nbsp;a&nbsp;PONG.<br>
+&nbsp;<br>
+return:&nbsp;True&nbsp;if&nbsp;the&nbsp;server&nbsp;replies&nbsp;to&nbsp;PING<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;if&nbsp;the&nbsp;server&nbsp;do&nbsp;not&nbsp;reply&nbsp;by&nbsp;PONG</tt></dd></dl>
+
+<dl><dt><a name="ClamdNetworkSocket-reload"><strong>reload</strong></a>(self)</dt><dd><tt>Force&nbsp;Clamd&nbsp;to&nbsp;reload&nbsp;signature&nbsp;database<br>
+&nbsp;<br>
+return:&nbsp;(string)&nbsp;"RELOADING"<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdNetworkSocket-scan_file"><strong>scan_file</strong></a>(self, file)</dt><dd><tt>Scan&nbsp;a&nbsp;file&nbsp;or&nbsp;directory&nbsp;given&nbsp;by&nbsp;filename&nbsp;and&nbsp;stop&nbsp;on&nbsp;first&nbsp;virus&nbsp;or&nbsp;<a href="socket.html#error">error</a>&nbsp;found.<br>
+Scan&nbsp;with&nbsp;archive&nbsp;support&nbsp;enabled.<br>
+&nbsp;<br>
+file&nbsp;(string)&nbsp;:&nbsp;filename&nbsp;or&nbsp;directory&nbsp;(MUST&nbsp;BE&nbsp;ABSOLUTE&nbsp;PATH&nbsp;!)<br>
+&nbsp;<br>
+return&nbsp;either&nbsp;:<br>
+&nbsp;&nbsp;-&nbsp;(dict):&nbsp;{filename1:&nbsp;"virusname"}<br>
+&nbsp;&nbsp;-&nbsp;None:&nbsp;if&nbsp;no&nbsp;virus&nbsp;found<br>
+&nbsp;<br>
+May&nbsp;raise&nbsp;:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem<br>
+&nbsp;&nbsp;-&nbsp;socket.timeout:&nbsp;if&nbsp;timeout&nbsp;has&nbsp;expired</tt></dd></dl>
+
+<dl><dt><a name="ClamdNetworkSocket-scan_stream"><strong>scan_stream</strong></a>(self, buffer_to_test)</dt><dd><tt>Scan&nbsp;a&nbsp;buffer<br>
+&nbsp;<br>
+buffer_to_test&nbsp;(string):&nbsp;buffer&nbsp;to&nbsp;scan<br>
+&nbsp;<br>
+return&nbsp;either:<br>
+&nbsp;&nbsp;-&nbsp;(dict):&nbsp;{filename1:&nbsp;"virusname"}<br>
+&nbsp;&nbsp;-&nbsp;None:&nbsp;if&nbsp;no&nbsp;virus&nbsp;found<br>
+&nbsp;<br>
+May&nbsp;raise&nbsp;:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#BufferTooLongError">BufferTooLongError</a>:&nbsp;if&nbsp;the&nbsp;buffer&nbsp;size&nbsp;exceeds&nbsp;clamd&nbsp;limits<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdNetworkSocket-shutdown"><strong>shutdown</strong></a>(self)</dt><dd><tt>Force&nbsp;Clamd&nbsp;to&nbsp;shutdown&nbsp;and&nbsp;exit<br>
+&nbsp;<br>
+return:&nbsp;nothing<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdNetworkSocket-stats"><strong>stats</strong></a>(self)</dt><dd><tt>Get&nbsp;Clamscan&nbsp;stats<br>
+&nbsp;<br>
+return:&nbsp;(string)&nbsp;clamscan&nbsp;stats<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdNetworkSocket-version"><strong>version</strong></a>(self)</dt><dd><tt>Get&nbsp;Clamscan&nbsp;version<br>
+&nbsp;<br>
+return:&nbsp;(string)&nbsp;clamscan&nbsp;version<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="pyclamd.html#_ClamdGeneric">_ClamdGeneric</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ClamdUnixSocket">class <strong>ClamdUnixSocket</strong></a>(<a href="pyclamd.html#_ClamdGeneric">_ClamdGeneric</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;for&nbsp;using&nbsp;clamd&nbsp;with&nbsp;an&nbsp;unix&nbsp;socket<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="pyclamd.html#ClamdUnixSocket">ClamdUnixSocket</a></dd>
+<dd><a href="pyclamd.html#_ClamdGeneric">_ClamdGeneric</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ClamdUnixSocket-__init__"><strong>__init__</strong></a>(self, filename<font color="#909090">='/var/run/clamav/clamd.ctl'</font>, timeout<font color="#909090">=None</font>)</dt><dd><tt>class&nbsp;initialisation<br>
+&nbsp;<br>
+filename&nbsp;(string)&nbsp;:&nbsp;unix&nbsp;socket&nbsp;filename<br>
+timeout&nbsp;(float&nbsp;or&nbsp;None)&nbsp;:&nbsp;socket&nbsp;timeout</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="pyclamd.html#_ClamdGeneric">_ClamdGeneric</a>:<br>
+<dl><dt><a name="ClamdUnixSocket-EICAR"><strong>EICAR</strong></a>(self)</dt><dd><tt>returns&nbsp;Eicar&nbsp;test&nbsp;string</tt></dd></dl>
+
+<dl><dt><a name="ClamdUnixSocket-contscan_file"><strong>contscan_file</strong></a>(self, file)</dt><dd><tt>Scan&nbsp;a&nbsp;file&nbsp;or&nbsp;directory&nbsp;given&nbsp;by&nbsp;filename<br>
+Do&nbsp;not&nbsp;stop&nbsp;on&nbsp;<a href="socket.html#error">error</a>&nbsp;or&nbsp;virus&nbsp;found.<br>
+Scan&nbsp;with&nbsp;archive&nbsp;support&nbsp;enabled.<br>
+&nbsp;<br>
+file&nbsp;(string):&nbsp;filename&nbsp;or&nbsp;directory&nbsp;(MUST&nbsp;BE&nbsp;ABSOLUTE&nbsp;PATH&nbsp;!)<br>
+&nbsp;<br>
+return&nbsp;either&nbsp;:<br>
+&nbsp;&nbsp;-&nbsp;(dict):&nbsp;{filename1:&nbsp;('FOUND',&nbsp;'virusname'),&nbsp;filename2:&nbsp;('ERROR',&nbsp;'reason')}<br>
+&nbsp;&nbsp;-&nbsp;None:&nbsp;if&nbsp;no&nbsp;virus&nbsp;found<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdUnixSocket-multiscan_file"><strong>multiscan_file</strong></a>(self, file)</dt><dd><tt>Scan&nbsp;a&nbsp;file&nbsp;or&nbsp;directory&nbsp;given&nbsp;by&nbsp;filename&nbsp;using&nbsp;multiple&nbsp;threads&nbsp;(faster&nbsp;on&nbsp;SMP&nbsp;machines).<br>
+Do&nbsp;not&nbsp;stop&nbsp;on&nbsp;<a href="socket.html#error">error</a>&nbsp;or&nbsp;virus&nbsp;found.<br>
+Scan&nbsp;with&nbsp;archive&nbsp;support&nbsp;enabled.<br>
+&nbsp;<br>
+file&nbsp;(string):&nbsp;filename&nbsp;or&nbsp;directory&nbsp;(MUST&nbsp;BE&nbsp;ABSOLUTE&nbsp;PATH&nbsp;!)<br>
+&nbsp;<br>
+return&nbsp;either&nbsp;:<br>
+&nbsp;&nbsp;-&nbsp;(dict):&nbsp;{filename1:&nbsp;('FOUND',&nbsp;'virusname'),&nbsp;filename2:&nbsp;('ERROR',&nbsp;'reason')}<br>
+&nbsp;&nbsp;-&nbsp;None:&nbsp;if&nbsp;no&nbsp;virus&nbsp;found<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdUnixSocket-ping"><strong>ping</strong></a>(self)</dt><dd><tt>Send&nbsp;a&nbsp;PING&nbsp;to&nbsp;the&nbsp;clamav&nbsp;server,&nbsp;which&nbsp;should&nbsp;reply<br>
+by&nbsp;a&nbsp;PONG.<br>
+&nbsp;<br>
+return:&nbsp;True&nbsp;if&nbsp;the&nbsp;server&nbsp;replies&nbsp;to&nbsp;PING<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;if&nbsp;the&nbsp;server&nbsp;do&nbsp;not&nbsp;reply&nbsp;by&nbsp;PONG</tt></dd></dl>
+
+<dl><dt><a name="ClamdUnixSocket-reload"><strong>reload</strong></a>(self)</dt><dd><tt>Force&nbsp;Clamd&nbsp;to&nbsp;reload&nbsp;signature&nbsp;database<br>
+&nbsp;<br>
+return:&nbsp;(string)&nbsp;"RELOADING"<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdUnixSocket-scan_file"><strong>scan_file</strong></a>(self, file)</dt><dd><tt>Scan&nbsp;a&nbsp;file&nbsp;or&nbsp;directory&nbsp;given&nbsp;by&nbsp;filename&nbsp;and&nbsp;stop&nbsp;on&nbsp;first&nbsp;virus&nbsp;or&nbsp;<a href="socket.html#error">error</a>&nbsp;found.<br>
+Scan&nbsp;with&nbsp;archive&nbsp;support&nbsp;enabled.<br>
+&nbsp;<br>
+file&nbsp;(string)&nbsp;:&nbsp;filename&nbsp;or&nbsp;directory&nbsp;(MUST&nbsp;BE&nbsp;ABSOLUTE&nbsp;PATH&nbsp;!)<br>
+&nbsp;<br>
+return&nbsp;either&nbsp;:<br>
+&nbsp;&nbsp;-&nbsp;(dict):&nbsp;{filename1:&nbsp;"virusname"}<br>
+&nbsp;&nbsp;-&nbsp;None:&nbsp;if&nbsp;no&nbsp;virus&nbsp;found<br>
+&nbsp;<br>
+May&nbsp;raise&nbsp;:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem<br>
+&nbsp;&nbsp;-&nbsp;socket.timeout:&nbsp;if&nbsp;timeout&nbsp;has&nbsp;expired</tt></dd></dl>
+
+<dl><dt><a name="ClamdUnixSocket-scan_stream"><strong>scan_stream</strong></a>(self, buffer_to_test)</dt><dd><tt>Scan&nbsp;a&nbsp;buffer<br>
+&nbsp;<br>
+buffer_to_test&nbsp;(string):&nbsp;buffer&nbsp;to&nbsp;scan<br>
+&nbsp;<br>
+return&nbsp;either:<br>
+&nbsp;&nbsp;-&nbsp;(dict):&nbsp;{filename1:&nbsp;"virusname"}<br>
+&nbsp;&nbsp;-&nbsp;None:&nbsp;if&nbsp;no&nbsp;virus&nbsp;found<br>
+&nbsp;<br>
+May&nbsp;raise&nbsp;:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#BufferTooLongError">BufferTooLongError</a>:&nbsp;if&nbsp;the&nbsp;buffer&nbsp;size&nbsp;exceeds&nbsp;clamd&nbsp;limits<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdUnixSocket-shutdown"><strong>shutdown</strong></a>(self)</dt><dd><tt>Force&nbsp;Clamd&nbsp;to&nbsp;shutdown&nbsp;and&nbsp;exit<br>
+&nbsp;<br>
+return:&nbsp;nothing<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdUnixSocket-stats"><strong>stats</strong></a>(self)</dt><dd><tt>Get&nbsp;Clamscan&nbsp;stats<br>
+&nbsp;<br>
+return:&nbsp;(string)&nbsp;clamscan&nbsp;stats<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<dl><dt><a name="ClamdUnixSocket-version"><strong>version</strong></a>(self)</dt><dd><tt>Get&nbsp;Clamscan&nbsp;version<br>
+&nbsp;<br>
+return:&nbsp;(string)&nbsp;clamscan&nbsp;version<br>
+&nbsp;<br>
+May&nbsp;raise:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#ConnectionError">ConnectionError</a>:&nbsp;in&nbsp;case&nbsp;of&nbsp;communication&nbsp;problem</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="pyclamd.html#_ClamdGeneric">_ClamdGeneric</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ConnectionError">class <strong>ConnectionError</strong></a>(<a href="socket.html#error">socket.error</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;for&nbsp;errors&nbsp;communication&nbsp;with&nbsp;clamd<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="pyclamd.html#ConnectionError">ConnectionError</a></dd>
+<dd><a href="socket.html#error">socket.error</a></dd>
+<dd><a href="exceptions.html#IOError">exceptions.IOError</a></dd>
+<dd><a href="exceptions.html#EnvironmentError">exceptions.EnvironmentError</a></dd>
+<dd><a href="exceptions.html#StandardError">exceptions.StandardError</a></dd>
+<dd><a href="exceptions.html#Exception">exceptions.Exception</a></dd>
+<dd><a href="exceptions.html#BaseException">exceptions.BaseException</a></dd>
+<dd><a href="__builtin__.html#object">__builtin__.object</a></dd>
+</dl>
+<hr>
+Data descriptors inherited from <a href="socket.html#error">socket.error</a>:<br>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="exceptions.html#IOError">exceptions.IOError</a>:<br>
+<dl><dt><a name="ConnectionError-__init__"><strong>__init__</strong></a>(...)</dt><dd><tt>x.<a href="#ConnectionError-__init__">__init__</a>(...)&nbsp;initializes&nbsp;x;&nbsp;see&nbsp;help(type(x))&nbsp;for&nbsp;signature</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="exceptions.html#IOError">exceptions.IOError</a>:<br>
+<dl><dt><strong>__new__</strong> = &lt;built-in method __new__ of type object&gt;<dd><tt>T.<a href="#ConnectionError-__new__">__new__</a>(S,&nbsp;...)&nbsp;-&gt;&nbsp;a&nbsp;new&nbsp;object&nbsp;with&nbsp;type&nbsp;S,&nbsp;a&nbsp;subtype&nbsp;of&nbsp;T</tt></dl>
+
+<hr>
+Methods inherited from <a href="exceptions.html#EnvironmentError">exceptions.EnvironmentError</a>:<br>
+<dl><dt><a name="ConnectionError-__reduce__"><strong>__reduce__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ConnectionError-__str__"><strong>__str__</strong></a>(...)</dt><dd><tt>x.<a href="#ConnectionError-__str__">__str__</a>()&nbsp;&lt;==&gt;&nbsp;str(x)</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="exceptions.html#EnvironmentError">exceptions.EnvironmentError</a>:<br>
+<dl><dt><strong>errno</strong></dt>
+<dd><tt>exception&nbsp;errno</tt></dd>
+</dl>
+<dl><dt><strong>filename</strong></dt>
+<dd><tt>exception&nbsp;filename</tt></dd>
+</dl>
+<dl><dt><strong>strerror</strong></dt>
+<dd><tt>exception&nbsp;strerror</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><a name="ConnectionError-__delattr__"><strong>__delattr__</strong></a>(...)</dt><dd><tt>x.<a href="#ConnectionError-__delattr__">__delattr__</a>('name')&nbsp;&lt;==&gt;&nbsp;del&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="ConnectionError-__getattribute__"><strong>__getattribute__</strong></a>(...)</dt><dd><tt>x.<a href="#ConnectionError-__getattribute__">__getattribute__</a>('name')&nbsp;&lt;==&gt;&nbsp;x.name</tt></dd></dl>
+
+<dl><dt><a name="ConnectionError-__getitem__"><strong>__getitem__</strong></a>(...)</dt><dd><tt>x.<a href="#ConnectionError-__getitem__">__getitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;x[y]</tt></dd></dl>
+
+<dl><dt><a name="ConnectionError-__getslice__"><strong>__getslice__</strong></a>(...)</dt><dd><tt>x.<a href="#ConnectionError-__getslice__">__getslice__</a>(i,&nbsp;j)&nbsp;&lt;==&gt;&nbsp;x[i:j]<br>
+&nbsp;<br>
+Use&nbsp;of&nbsp;negative&nbsp;indices&nbsp;is&nbsp;not&nbsp;supported.</tt></dd></dl>
+
+<dl><dt><a name="ConnectionError-__repr__"><strong>__repr__</strong></a>(...)</dt><dd><tt>x.<a href="#ConnectionError-__repr__">__repr__</a>()&nbsp;&lt;==&gt;&nbsp;repr(x)</tt></dd></dl>
+
+<dl><dt><a name="ConnectionError-__setattr__"><strong>__setattr__</strong></a>(...)</dt><dd><tt>x.<a href="#ConnectionError-__setattr__">__setattr__</a>('name',&nbsp;value)&nbsp;&lt;==&gt;&nbsp;x.name&nbsp;=&nbsp;value</tt></dd></dl>
+
+<dl><dt><a name="ConnectionError-__setstate__"><strong>__setstate__</strong></a>(...)</dt></dl>
+
+<dl><dt><a name="ConnectionError-__unicode__"><strong>__unicode__</strong></a>(...)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="exceptions.html#BaseException">exceptions.BaseException</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+</dl>
+<dl><dt><strong>args</strong></dt>
+</dl>
+<dl><dt><strong>message</strong></dt>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__version__</strong> = '0.3.1'</td></tr></table>
+</body></html>
