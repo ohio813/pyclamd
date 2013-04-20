@@ -37,6 +37,10 @@
 #                            that it will only get one result at a time. This is not
 #                            always the case: it may get multiple results separated
 #                            by newlines.
+#                          - Typos corrected with pyflakes
+#                          - Adding a compatibility layer for the most important
+#                            functions in the 0.2 API - init_*_socket, scan_file,
+#                            contscan_file, multiscan_file, and version.
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
@@ -642,6 +646,52 @@ class ClamdNetworkSocket(_ClamdGeneric):
         return
 
     
+
+############################################################################
+
+
+# Backwards compatibility API ##############################################
+
+socketinst = None
+
+def init_network_socket(host='127.0.0.1', port=3310, timeout=None):
+    """Deprecated API - use ClamdNetworkSocket instead."""
+    global socketinst
+    socketinst = ClamdNetworkSocket(host=host, port=port, timeout=timeout)
+
+def init_unix_socket(filename="/var/run/clamav/clamd.ctl"):
+    """Deprecated API - use ClamdUnixSocket instead."""
+    global socketinst
+    socketinst = ClamdUnixSocket(filename=filename)
+
+def _needs_socket(func):
+    """Decorator to check that the global socket is initialised."""
+    def wrapper(*args, **kw):
+        if socketinst is None:
+            raise ConnectionError('socket not initialised')
+        return func(*args, **kw)
+    wrapper.__doc__ = func.__doc__
+    return wrapper
+
+@_needs_socket
+def scan_file(file):
+    """Deprecated API - use one of the Clamd*Socket classes instead."""
+    return socketinst.scan_file(file)
+
+@_needs_socket
+def contscan_file(file):
+    """Deprecated API - use one of the Clamd*Socket classes instead."""
+    return socketinst.contscan_file(file)
+
+@_needs_socket
+def multiscan_file(file):
+    """Deprecated API - use one of the Clamd*Socket classes instead."""
+    return socketinst.multiscan_file(file)
+
+@_needs_socket
+def version():
+    """Deprecated API - use one of the Clamd*Socket classes instead."""
+    return socketinst.version()
 
 ############################################################################
 
