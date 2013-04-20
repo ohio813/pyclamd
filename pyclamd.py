@@ -32,6 +32,7 @@
 #                   TK: - changes to API to make it more consistent
 # 2012-11-20 v0.3.1 AN: - typo change (Connextion to Connexion)
 #                       - Fixed Issue 3: scan_stream: AssertionError
+# 2013-04-20 v0.3.2 TT/AN: - improving encoding support for non latin filenames
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
@@ -50,8 +51,9 @@ pyclamd.py
 
 Author : Alexandre Norman - norman()xael.org
 Contributors :
-  Philippe Lagadec - philippe.lagadec()laposte.net
-  Thomas Kastner - tk()underground8.com
+ - Philippe Lagadec - philippe.lagadec()laposte.net
+ - Thomas Kastner - tk()underground8.com
+ - Theodoropoulos Theodoros (TeD TeD) - sbujam()gmail.com
 Licence : LGPL
 
 Usage :
@@ -86,6 +88,11 @@ POOLS:
 True
 >>> cd.scan_stream(cd.EICAR())
 {'stream': ('FOUND', 'Eicar-Test-Signature')}
+>>> cd.scan_stream(cd.EICAR())
+{'stream': ('FOUND', 'Eicar-Test-Signature')}
+>>> void = open('/tmp/EICAR-éèô请收藏我们的网址','w').write(cd.EICAR())
+>>> cd.scan_file('/tmp/EICAR-éèô请收藏我们的网址')
+{'/tmp/EICAR-éèô请收藏我们的网址': ('FOUND', 'Eicar-Test-Signature')}
 """
 
 
@@ -461,8 +468,10 @@ class _ClamdGeneric(object):
         `man clamd` recommends to prefix commands with z, but we will use \n
         terminated strings, as python<->clamd has some problems with \0x00
         """
-
-        cmd = str.encode('n{0}\n'.format(cmd))
+        try:
+            cmd = str.encode('n{0}\n'.format(cmd))
+        except UnicodeDecodeError:
+            cmd = 'n{0}\n'.format(cmd)
         self.clamd_socket.send(cmd)
         return
 
@@ -472,7 +481,12 @@ class _ClamdGeneric(object):
         """
         receive response from clamd and strip all whitespace characters
         """
-        response =  bytes.decode(self.clamd_socket.recv(4096)).strip()
+        data = self.clamd_socket.recv(4096)
+        try:
+            response =  bytes.decode(data).strip()
+        except UnicodeDecodeError:
+            response =  data.strip()
+
         return response
 
 
