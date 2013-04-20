@@ -115,11 +115,8 @@ __version__ = "0.3.2"
 
 
 import socket
-import types
 import struct
-import string
 import base64
-import sys
 
 ############################################################################
 
@@ -168,12 +165,12 @@ class _ClamdGeneric(object):
             result = self._recv_response()
             self._close_socket()
         except socket.error:
-            raise ConnexionError('Could not ping clamd server')
+            raise ConnectionError('Could not ping clamd server')
 
         if result == 'PONG':
             return True
         else:
-            raise ConnexionError('Could not ping clamd server [{0}]'.format(result))
+            raise ConnectionError('Could not ping clamd server [{0}]'.format(result))
         return
 
 
@@ -254,7 +251,7 @@ class _ClamdGeneric(object):
         try:
             self._init_socket()
             self._send_command('SHUTDOWN')
-            result = self._recv_response()
+            self._recv_response()
             self._close_socket()
         except socket.error:
             raise ConnectionError('Could probably not shutdown clamd')
@@ -665,7 +662,7 @@ def _print_doc():
     """
     This is for internal use
     """
-    import os, sys
+    import os
     os.system('pydoc ./{0}.py'.format(__name__))
     return
 
