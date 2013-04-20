@@ -33,6 +33,10 @@
 # 2012-11-20 v0.3.1 AN: - typo change (Connextion to Connexion)
 #                       - Fixed Issue 3: scan_stream: AssertionError
 # 2013-04-20 v0.3.2 TT/AN: - improving encoding support for non latin filenames
+#                   TKL:   - When pyclamd calls _recv_response, it appears to expect
+#                            that it will only get one result at a time. This is not
+#                            always the case: it may get multiple results separated
+#                            by newlines.
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
@@ -51,9 +55,11 @@ pyclamd.py
 
 Author : Alexandre Norman - norman()xael.org
 Contributors :
- - Philippe Lagadec - philippe.lagadec()laposte.net
- - Thomas Kastner - tk()underground8.com
- - Theodoropoulos Theodoros (TeD TeD) - sbujam()gmail.com
+ - PL :  Philippe Lagadec - philippe.lagadec()laposte.net
+ - TK :  Thomas Kastner - tk()underground8.com
+ - TT :  Theodoropoulos Theodoros (TeD TeD) - sbujam()gmail.com
+ - TKL : Thomas Kluyver - thomas () kluyver.me.uk
+
 Licence : LGPL
 
 Usage :
@@ -338,13 +344,14 @@ class _ClamdGeneric(object):
                 raise ConnectionError('Unable to scan {0}'.format(file))
 
             if len(result) > 0:
-                filename, reason, status = self._parse_response(result)
+                for resline in result.splitlines():
+                    filename, reason, status = self._parse_response(resline)
 
-                if status == 'ERROR':
-                    dr[filename] = ('ERROR', '{0}'.format(reason))
+                    if status == 'ERROR':
+                        dr[filename] = ('ERROR', '{0}'.format(reason))
                     
-                elif status == 'FOUND':
-                    dr[filename] = ('FOUND', '{0}'.format(reason))
+                    elif status == 'FOUND':
+                        dr[filename] = ('FOUND', '{0}'.format(reason))
 
         self._close_socket()
         if not dr:
@@ -389,13 +396,14 @@ class _ClamdGeneric(object):
                 raise ConnectionError('Unable to scan  {0}'.format(file))
 
             if len(result) > 0:
-                filename, reason, status = self._parse_response(result)
-
-                if status == 'ERROR':
-                    dr[filename] = ('ERROR', '{0}'.format(reason))
+                for resline in result.splitlines():
+                    filename, reason, status = self._parse_response(resline)
                     
-                elif status == 'FOUND':
-                    dr[filename] = ('FOUND', '{0}'.format(reason))
+                    if status == 'ERROR':
+                        dr[filename] = ('ERROR', '{0}'.format(reason))
+                    
+                    elif status == 'FOUND':
+                        dr[filename] = ('FOUND', '{0}'.format(reason))
 
         self._close_socket()
         if not dr:

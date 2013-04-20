@@ -6,15 +6,16 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#7799ee">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pyclamd</strong></big></big> (version 0.3.1)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pyclamd</strong></big></big> (version 0.3.2)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/xael/ESPACE_KM/python/pyclamd/pyclamd.py">/home/xael/ESPACE_KM/python/pyclamd/pyclamd.py</a></font></td></tr></table>
     <p><tt>pyclamd.py<br>
 &nbsp;<br>
 Author&nbsp;:&nbsp;Alexandre&nbsp;Norman&nbsp;-&nbsp;norman()xael.org<br>
 Contributors&nbsp;:<br>
-&nbsp;&nbsp;Philippe&nbsp;Lagadec&nbsp;-&nbsp;philippe.lagadec()laposte.net<br>
-&nbsp;&nbsp;Thomas&nbsp;Kastner&nbsp;-&nbsp;tk()underground8.com<br>
+&nbsp;-&nbsp;Philippe&nbsp;Lagadec&nbsp;-&nbsp;philippe.lagadec()laposte.net<br>
+&nbsp;-&nbsp;Thomas&nbsp;Kastner&nbsp;-&nbsp;tk()underground8.com<br>
+&nbsp;-&nbsp;Theodoropoulos&nbsp;Theodoros&nbsp;(TeD&nbsp;TeD)&nbsp;-&nbsp;sbujam()gmail.com<br>
 Licence&nbsp;:&nbsp;LGPL<br>
 &nbsp;<br>
 Usage&nbsp;:<br>
@@ -48,7 +49,19 @@ POOLS:<br>
 &gt;&gt;&gt;&nbsp;cd.scan_file('/tmp/NO_EICAR')&nbsp;is&nbsp;None<br>
 True<br>
 &gt;&gt;&gt;&nbsp;cd.scan_stream(cd.EICAR())<br>
-{'stream':&nbsp;('FOUND',&nbsp;'Eicar-Test-Signature')}</tt></p>
+{'stream':&nbsp;('FOUND',&nbsp;'Eicar-Test-Signature')}<br>
+&gt;&gt;&gt;&nbsp;cd.scan_stream(cd.EICAR())<br>
+{'stream':&nbsp;('FOUND',&nbsp;'Eicar-Test-Signature')}<br>
+&gt;&gt;&gt;&nbsp;directory&nbsp;=&nbsp;cd.contscan_file('/tmp/')<br>
+&gt;&gt;&gt;&nbsp;directory['/tmp/EICAR']<br>
+('FOUND',&nbsp;'Eicar-Test-Signature')<br>
+&gt;&gt;&gt;&nbsp;#&nbsp;Testing&nbsp;encoding&nbsp;with&nbsp;non&nbsp;latin&nbsp;characters<br>
+&gt;&gt;&gt;&nbsp;void&nbsp;=&nbsp;open('/tmp/EICAR-éèô请收藏我们的网址','w').write(cd.EICAR())<br>
+&gt;&gt;&gt;&nbsp;r&nbsp;=&nbsp;cd.scan_file('/tmp/EICAR-éèô请收藏我们的网址')<br>
+&gt;&gt;&gt;&nbsp;print(list(r.keys())[0])<br>
+/tmp/EICAR-éèô请收藏我们的网址<br>
+&gt;&gt;&gt;&nbsp;print(r['/tmp/EICAR-éèô请收藏我们的网址'])<br>
+('FOUND',&nbsp;'Eicar-Test-Signature')</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -477,5 +490,5 @@ Data descriptors inherited from <a href="exceptions.html#BaseException">exceptio
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>__version__</strong> = '0.3.1'</td></tr></table>
+<td width="100%"><strong>__version__</strong> = '0.3.2'</td></tr></table>
 </body></html>
