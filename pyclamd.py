@@ -90,14 +90,21 @@ True
 {'stream': ('FOUND', 'Eicar-Test-Signature')}
 >>> cd.scan_stream(cd.EICAR())
 {'stream': ('FOUND', 'Eicar-Test-Signature')}
+>>> directory = cd.contscan_file('/tmp/')
+>>> directory['/tmp/EICAR']
+('FOUND', 'Eicar-Test-Signature')
+>>> # Testing encoding with non latin characters
 >>> void = open('/tmp/EICAR-éèô请收藏我们的网址','w').write(cd.EICAR())
->>> cd.scan_file('/tmp/EICAR-éèô请收藏我们的网址')
-{'/tmp/EICAR-éèô请收藏我们的网址': ('FOUND', 'Eicar-Test-Signature')}
+>>> r = cd.scan_file('/tmp/EICAR-éèô请收藏我们的网址')
+>>> print(list(r.keys())[0])
+/tmp/EICAR-éèô请收藏我们的网址
+>>> print(r['/tmp/EICAR-éèô请收藏我们的网址'])
+('FOUND', 'Eicar-Test-Signature')
 """
 
 
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 # $Source$
 
 
@@ -483,9 +490,14 @@ class _ClamdGeneric(object):
         """
         data = self.clamd_socket.recv(4096)
         try:
-            response =  bytes.decode(data).strip()
+            response = bytes.decode(data).strip()
         except UnicodeDecodeError:
-            response =  data.strip()
+            response = data.decode('UTF-8').encode('UTF-8', errors="replace").strip()
+            response = data.strip()
+            try:
+                pass
+            except UnicodeDecodeError:
+                response = data.strip()
 
         return response
 
@@ -499,9 +511,14 @@ class _ClamdGeneric(object):
         c = '...'
         while c != '':
             try:
-                c = bytes.decode(self.clamd_socket.recv(4096)).strip()
+                data = self.clamd_socket.recv(4096)
+                try:
+                    c = bytes.decode(data).strip()
+                except UnicodeDecodeError:
+                    response = data.strip()
             except socket.error:
                 break
+                
             response += '{0}\n'.format(c)
         return response
 
@@ -519,7 +536,6 @@ class _ClamdGeneric(object):
         """
         parses responses for SCAN, CONTSCAN, MULTISCAN and STREAM commands.
         """
-
         msg = msg.strip()
         filename = msg.split(': ')[0]
         left = msg.split(': ')[1:]
