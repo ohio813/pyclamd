@@ -41,6 +41,8 @@
 #                          - Adding a compatibility layer for the most important
 #                            functions in the 0.2 API - init_*_socket, scan_file,
 #                            contscan_file, multiscan_file, and version.
+# 2013-04-21 v0.3.3 AN : - ClamdUnixSocket is now able to get unix socket name
+#                          from /etc/clamav/clamd.conf
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
@@ -72,8 +74,8 @@ Test strings :
 ^^^^^^^^^^^^
 
 >>> import pyclamd
->>> cd = pyclamd.ClamdUnixSocket()
 >>> try:
+...     cd = pyclamd.ClamdUnixSocket()
 ...     # test if server is reachable
 ...     cd.ping()
 ... except pyclamd.ConnectionError:
@@ -116,7 +118,7 @@ True
 
 
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 # $Source$
 
 
@@ -557,6 +559,7 @@ class _ClamdGeneric(object):
         else:
             reason, status = '', 'OK'
 
+
         return filename, reason, status
 
 
@@ -569,13 +572,24 @@ class ClamdUnixSocket(_ClamdGeneric):
     """
     Class for using clamd with an unix socket
     """
-    def __init__(self, filename="/var/run/clamav/clamd.ctl", timeout=None):
+    def __init__(self, filename=None, timeout=None):
         """
-        class initialisation
-
-        filename (string) : unix socket filename
+        Unix Socket Class initialisation
+        
+        filename (string) : unix socket filename or None to get the socket from /etc/clamav/clamd.conf
         timeout (float or None) : socket timeout
         """
+
+        # try to get unix socket from clamd.conf
+        if filename is None:
+            with open('/etc/clamav/clamd.conf', 'r') as conffile:
+                for line in conffile.readlines():
+                    if line.strip().split()[0] == 'LocalSocket':
+                        filename = line.strip().split()[1]
+                        break
+                else:
+                    raise ConnectionError('Could not find clamd unix socket from /etc/clamav/clamd.conf')
+        
         assert isinstance(filename, str), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
         assert isinstance(timeout, (float, int)) or timeout is None, 'Wrong type for [timeout], should be either None or a float [was {0}]'.format(type(timeout))
 
@@ -583,6 +597,10 @@ class ClamdUnixSocket(_ClamdGeneric):
         
         self.unix_socket = filename
         self.timeout = timeout
+
+        # tests the socket
+        self._init_socket()
+        self._close_socket()
 
         return
 
@@ -609,12 +627,12 @@ class ClamdNetworkSocket(_ClamdGeneric):
     """
     def __init__(self, host='127.0.0.1', port=3310, timeout=None):
         """
-        class initialisation
-
+        Network Class initialisation
         host (string) : hostname or ip address
         port (int) : TCP port
         timeout (float or None) : socket timeout
         """
+            
         assert isinstance(host, str), 'Wrong type for [host], should be a string [was {0}]'.format(type(host))
         assert isinstance(port, int), 'Wrong type for [port], should be an int [was {0}]'.format(type(port))
         assert isinstance(timeout, (float, int)) or timeout is None, 'Wrong type for [timeout], should be either None or a float [was {0}]'.format(type(timeout))
@@ -624,6 +642,10 @@ class ClamdNetworkSocket(_ClamdGeneric):
         self.host = host
         self.port = port
         self.timeout = timeout
+
+        # tests the socket
+        self._init_socket()
+        self._close_socket()
 
         return
 
@@ -656,7 +678,7 @@ def init_network_socket(host='127.0.0.1', port=3310, timeout=None):
     global socketinst
     socketinst = ClamdNetworkSocket(host=host, port=port, timeout=timeout)
 
-def init_unix_socket(filename="/var/run/clamav/clamd.ctl"):
+def init_unix_socket(filename=None):
     """Deprecated API - use ClamdUnixSocket instead."""
     global socketinst
     socketinst = ClamdUnixSocket(filename=filename)
