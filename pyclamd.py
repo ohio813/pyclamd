@@ -584,9 +584,13 @@ class ClamdUnixSocket(_ClamdGeneric):
         if filename is None:
             with open('/etc/clamav/clamd.conf', 'r') as conffile:
                 for line in conffile.readlines():
-                    if line.strip().split()[0] == 'LocalSocket':
-                        filename = line.strip().split()[1]
-                        break
+                    try:
+                        if line.strip().split()[0] == 'LocalSocket':
+                            filename = line.strip().split()[1]
+                            break
+                    except IndexError:
+                        pass
+                            
                 else:
                     raise ConnectionError('Could not find clamd unix socket from /etc/clamav/clamd.conf')
         
