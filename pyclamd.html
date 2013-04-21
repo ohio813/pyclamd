@@ -6,16 +6,18 @@
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
 <tr bgcolor="#7799ee">
 <td valign=bottom>&nbsp;<br>
-<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pyclamd</strong></big></big> (version 0.3.2)</font></td
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>pyclamd</strong></big></big> (version 0.3.3)</font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/xael/ESPACE_KM/python/pyclamd/pyclamd.py">/home/xael/ESPACE_KM/python/pyclamd/pyclamd.py</a></font></td></tr></table>
     <p><tt>pyclamd.py<br>
 &nbsp;<br>
 Author&nbsp;:&nbsp;Alexandre&nbsp;Norman&nbsp;-&nbsp;norman()xael.org<br>
 Contributors&nbsp;:<br>
-&nbsp;-&nbsp;Philippe&nbsp;Lagadec&nbsp;-&nbsp;philippe.lagadec()laposte.net<br>
-&nbsp;-&nbsp;Thomas&nbsp;Kastner&nbsp;-&nbsp;tk()underground8.com<br>
-&nbsp;-&nbsp;Theodoropoulos&nbsp;Theodoros&nbsp;(TeD&nbsp;TeD)&nbsp;-&nbsp;sbujam()gmail.com<br>
+&nbsp;-&nbsp;PL&nbsp;:&nbsp;&nbsp;Philippe&nbsp;Lagadec&nbsp;-&nbsp;philippe.lagadec()laposte.net<br>
+&nbsp;-&nbsp;TK&nbsp;:&nbsp;&nbsp;Thomas&nbsp;Kastner&nbsp;-&nbsp;tk()underground8.com<br>
+&nbsp;-&nbsp;TT&nbsp;:&nbsp;&nbsp;Theodoropoulos&nbsp;Theodoros&nbsp;(TeD&nbsp;TeD)&nbsp;-&nbsp;sbujam()gmail.com<br>
+&nbsp;-&nbsp;TKL&nbsp;:&nbsp;Thomas&nbsp;Kluyver&nbsp;-&nbsp;thomas&nbsp;()&nbsp;kluyver.me.uk<br>
+&nbsp;<br>
 Licence&nbsp;:&nbsp;LGPL<br>
 &nbsp;<br>
 Usage&nbsp;:<br>
@@ -24,8 +26,8 @@ Test&nbsp;strings&nbsp;:<br>
 ^^^^^^^^^^^^<br>
 &nbsp;<br>
 &gt;&gt;&gt;&nbsp;import&nbsp;pyclamd<br>
-&gt;&gt;&gt;&nbsp;cd&nbsp;=&nbsp;pyclamd.<a href="#ClamdUnixSocket">ClamdUnixSocket</a>()<br>
 &gt;&gt;&gt;&nbsp;try:<br>
+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cd&nbsp;=&nbsp;pyclamd.<a href="#ClamdUnixSocket">ClamdUnixSocket</a>()<br>
 ...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;test&nbsp;if&nbsp;server&nbsp;is&nbsp;reachable<br>
 ...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cd.ping()<br>
 ...&nbsp;except&nbsp;pyclamd.<a href="#ConnectionError">ConnectionError</a>:<br>
@@ -36,7 +38,7 @@ Test&nbsp;strings&nbsp;:<br>
 ...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;except&nbsp;pyclamd.<a href="#ConnectionError">ConnectionError</a>:<br>
 ...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;<a href="exceptions.html#ValueError">ValueError</a>('could&nbsp;not&nbsp;connect&nbsp;to&nbsp;clamd&nbsp;server&nbsp;either&nbsp;by&nbsp;unix&nbsp;or&nbsp;network&nbsp;socket')<br>
 True<br>
-&gt;&gt;&gt;&nbsp;print(cd.version().split()[0])<br>
+&gt;&gt;&gt;&nbsp;print(cd.<a href="#-version">version</a>().split()[0])<br>
 ClamAV<br>
 &gt;&gt;&gt;&nbsp;print(cd.reload())<br>
 RELOADING<br>
@@ -44,24 +46,26 @@ RELOADING<br>
 POOLS:<br>
 &gt;&gt;&gt;&nbsp;void&nbsp;=&nbsp;open('/tmp/EICAR','w').write(cd.EICAR())<br>
 &gt;&gt;&gt;&nbsp;void&nbsp;=&nbsp;open('/tmp/NO_EICAR','w').write('no&nbsp;virus&nbsp;in&nbsp;this&nbsp;file')<br>
-&gt;&gt;&gt;&nbsp;cd.scan_file('/tmp/EICAR')<br>
-{'/tmp/EICAR':&nbsp;('FOUND',&nbsp;'Eicar-Test-Signature')}<br>
-&gt;&gt;&gt;&nbsp;cd.scan_file('/tmp/NO_EICAR')&nbsp;is&nbsp;None<br>
+&gt;&gt;&gt;&nbsp;cd.<a href="#-scan_file">scan_file</a>('/tmp/EICAR')['/tmp/EICAR']<br>
+('FOUND',&nbsp;'Eicar-Test-Signature')<br>
+&gt;&gt;&gt;&nbsp;cd.<a href="#-scan_file">scan_file</a>('/tmp/NO_EICAR')&nbsp;is&nbsp;None<br>
 True<br>
-&gt;&gt;&gt;&nbsp;cd.scan_stream(cd.EICAR())<br>
-{'stream':&nbsp;('FOUND',&nbsp;'Eicar-Test-Signature')}<br>
-&gt;&gt;&gt;&nbsp;cd.scan_stream(cd.EICAR())<br>
-{'stream':&nbsp;('FOUND',&nbsp;'Eicar-Test-Signature')}<br>
-&gt;&gt;&gt;&nbsp;directory&nbsp;=&nbsp;cd.contscan_file('/tmp/')<br>
+&gt;&gt;&gt;&nbsp;cd.scan_stream(cd.EICAR())['stream']<br>
+('FOUND',&nbsp;'Eicar-Test-Signature')<br>
+&gt;&gt;&gt;&nbsp;directory&nbsp;=&nbsp;cd.<a href="#-contscan_file">contscan_file</a>('/tmp/')<br>
 &gt;&gt;&gt;&nbsp;directory['/tmp/EICAR']<br>
 ('FOUND',&nbsp;'Eicar-Test-Signature')<br>
-&gt;&gt;&gt;&nbsp;#&nbsp;Testing&nbsp;encoding&nbsp;with&nbsp;non&nbsp;latin&nbsp;characters<br>
+&gt;&gt;&gt;&nbsp;#&nbsp;Testing&nbsp;encoding&nbsp;with&nbsp;non&nbsp;latin&nbsp;characters&nbsp;(Chinese&nbsp;ideograms&nbsp;taken&nbsp;from&nbsp;random&nbsp;site,&nbsp;don't&nbsp;know&nbsp;what&nbsp;it&nbsp;mean,&nbsp;sorry)<br>
 &gt;&gt;&gt;&nbsp;void&nbsp;=&nbsp;open('/tmp/EICAR-éèô请收藏我们的网址','w').write(cd.EICAR())<br>
-&gt;&gt;&gt;&nbsp;r&nbsp;=&nbsp;cd.scan_file('/tmp/EICAR-éèô请收藏我们的网址')<br>
+&gt;&gt;&gt;&nbsp;r&nbsp;=&nbsp;cd.<a href="#-scan_file">scan_file</a>('/tmp/EICAR-éèô请收藏我们的网址')<br>
 &gt;&gt;&gt;&nbsp;print(list(r.keys())[0])<br>
 /tmp/EICAR-éèô请收藏我们的网址<br>
 &gt;&gt;&gt;&nbsp;print(r['/tmp/EICAR-éèô请收藏我们的网址'])<br>
-('FOUND',&nbsp;'Eicar-Test-Signature')</tt></p>
+('FOUND',&nbsp;'Eicar-Test-Signature')<br>
+&gt;&gt;&gt;&nbsp;import&nbsp;os<br>
+&gt;&gt;&gt;&nbsp;os.remove('/tmp/EICAR')<br>
+&gt;&gt;&gt;&nbsp;os.remove('/tmp/NO_EICAR')<br>
+&gt;&gt;&gt;&nbsp;os.remove('/tmp/EICAR-éèô请收藏我们的网址')</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -70,11 +74,8 @@ True<br>
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="base64.html">base64</a><br>
-<a href="socket.html">socket</a><br>
-</td><td width="25%" valign=top><a href="string.html">string</a><br>
-<a href="struct.html">struct</a><br>
-</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
-<a href="types.html">types</a><br>
+</td><td width="25%" valign=top><a href="socket.html">socket</a><br>
+</td><td width="25%" valign=top><a href="struct.html">struct</a><br>
 </td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
@@ -181,8 +182,7 @@ Data descriptors inherited from <a href="exceptions.html#BaseException">exceptio
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="ClamdNetworkSocket-__init__"><strong>__init__</strong></a>(self, host<font color="#909090">='127.0.0.1'</font>, port<font color="#909090">=3310</font>, timeout<font color="#909090">=None</font>)</dt><dd><tt>class&nbsp;initialisation<br>
-&nbsp;<br>
+<dl><dt><a name="ClamdNetworkSocket-__init__"><strong>__init__</strong></a>(self, host<font color="#909090">='127.0.0.1'</font>, port<font color="#909090">=3310</font>, timeout<font color="#909090">=None</font>)</dt><dd><tt>Network&nbsp;Class&nbsp;initialisation<br>
 host&nbsp;(string)&nbsp;:&nbsp;hostname&nbsp;or&nbsp;ip&nbsp;address<br>
 port&nbsp;(int)&nbsp;:&nbsp;TCP&nbsp;port<br>
 timeout&nbsp;(float&nbsp;or&nbsp;None)&nbsp;:&nbsp;socket&nbsp;timeout</tt></dd></dl>
@@ -302,9 +302,9 @@ Data descriptors inherited from <a href="pyclamd.html#_ClamdGeneric">_ClamdGener
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="ClamdUnixSocket-__init__"><strong>__init__</strong></a>(self, filename<font color="#909090">='/var/run/clamav/clamd.ctl'</font>, timeout<font color="#909090">=None</font>)</dt><dd><tt>class&nbsp;initialisation<br>
+<dl><dt><a name="ClamdUnixSocket-__init__"><strong>__init__</strong></a>(self, filename<font color="#909090">=None</font>, timeout<font color="#909090">=None</font>)</dt><dd><tt>Unix&nbsp;Socket&nbsp;Class&nbsp;initialisation<br>
 &nbsp;<br>
-filename&nbsp;(string)&nbsp;:&nbsp;unix&nbsp;socket&nbsp;filename<br>
+filename&nbsp;(string)&nbsp;:&nbsp;unix&nbsp;socket&nbsp;filename&nbsp;or&nbsp;None&nbsp;to&nbsp;get&nbsp;the&nbsp;socket&nbsp;from&nbsp;/etc/clamav/clamd.conf<br>
 timeout&nbsp;(float&nbsp;or&nbsp;None)&nbsp;:&nbsp;socket&nbsp;timeout</tt></dd></dl>
 
 <hr>
@@ -485,10 +485,24 @@ Data descriptors inherited from <a href="exceptions.html#BaseException">exceptio
 </dl>
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-contscan_file"><strong>contscan_file</strong></a> = wrapper(*args, **kw)</dt><dd><tt>Deprecated&nbsp;API&nbsp;-&nbsp;use&nbsp;one&nbsp;of&nbsp;the&nbsp;Clamd*Socket&nbsp;classes&nbsp;instead.</tt></dd></dl>
+ <dl><dt><a name="-init_network_socket"><strong>init_network_socket</strong></a>(host<font color="#909090">='127.0.0.1'</font>, port<font color="#909090">=3310</font>, timeout<font color="#909090">=None</font>)</dt><dd><tt>Deprecated&nbsp;API&nbsp;-&nbsp;use&nbsp;<a href="#ClamdNetworkSocket">ClamdNetworkSocket</a>&nbsp;instead.</tt></dd></dl>
+ <dl><dt><a name="-init_unix_socket"><strong>init_unix_socket</strong></a>(filename<font color="#909090">=None</font>)</dt><dd><tt>Deprecated&nbsp;API&nbsp;-&nbsp;use&nbsp;<a href="#ClamdUnixSocket">ClamdUnixSocket</a>&nbsp;instead.</tt></dd></dl>
+ <dl><dt><a name="-multiscan_file"><strong>multiscan_file</strong></a> = wrapper(*args, **kw)</dt><dd><tt>Deprecated&nbsp;API&nbsp;-&nbsp;use&nbsp;one&nbsp;of&nbsp;the&nbsp;Clamd*Socket&nbsp;classes&nbsp;instead.</tt></dd></dl>
+ <dl><dt><a name="-scan_file"><strong>scan_file</strong></a> = wrapper(*args, **kw)</dt><dd><tt>Deprecated&nbsp;API&nbsp;-&nbsp;use&nbsp;one&nbsp;of&nbsp;the&nbsp;Clamd*Socket&nbsp;classes&nbsp;instead.</tt></dd></dl>
+ <dl><dt><a name="-version"><strong>version</strong></a> = wrapper(*args, **kw)</dt><dd><tt>Deprecated&nbsp;API&nbsp;-&nbsp;use&nbsp;one&nbsp;of&nbsp;the&nbsp;Clamd*Socket&nbsp;classes&nbsp;instead.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">
 <td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>__version__</strong> = '0.3.2'</td></tr></table>
+<td width="100%"><strong>__version__</strong> = '0.3.3'<br>
+<strong>socketinst</strong> = None</td></tr></table>
 </body></html>

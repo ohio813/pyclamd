@@ -41,8 +41,8 @@
 #                          - Adding a compatibility layer for the most important
 #                            functions in the 0.2 API - init_*_socket, scan_file,
 #                            contscan_file, multiscan_file, and version.
-# 2013-04-21 v0.3.3 AN : - ClamdUnixSocket is now able to get unix socket name
-#                          from /etc/clamav/clamd.conf
+# 2013-04-21 v0.3.3 AN: - ClamdUnixSocket is now able to get unix socket name
+#                         from /etc/clamav/clamd.conf
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
