@@ -92,24 +92,26 @@ RELOADING
 POOLS:
 >>> void = open('/tmp/EICAR','w').write(cd.EICAR())
 >>> void = open('/tmp/NO_EICAR','w').write('no virus in this file')
->>> cd.scan_file('/tmp/EICAR')
-{'/tmp/EICAR': ('FOUND', 'Eicar-Test-Signature')}
+>>> cd.scan_file('/tmp/EICAR')['/tmp/EICAR']
+('FOUND', 'Eicar-Test-Signature')
 >>> cd.scan_file('/tmp/NO_EICAR') is None
 True
->>> cd.scan_stream(cd.EICAR())
-{'stream': ('FOUND', 'Eicar-Test-Signature')}
->>> cd.scan_stream(cd.EICAR())
-{'stream': ('FOUND', 'Eicar-Test-Signature')}
+>>> cd.scan_stream(cd.EICAR())['stream']
+('FOUND', 'Eicar-Test-Signature')
 >>> directory = cd.contscan_file('/tmp/')
 >>> directory['/tmp/EICAR']
 ('FOUND', 'Eicar-Test-Signature')
->>> # Testing encoding with non latin characters
+>>> # Testing encoding with non latin characters (Chinese ideograms taken from random site, don't know what it mean, sorry)
 >>> void = open('/tmp/EICAR-éèô请收藏我们的网址','w').write(cd.EICAR())
 >>> r = cd.scan_file('/tmp/EICAR-éèô请收藏我们的网址')
 >>> print(list(r.keys())[0])
 /tmp/EICAR-éèô请收藏我们的网址
 >>> print(r['/tmp/EICAR-éèô请收藏我们的网址'])
 ('FOUND', 'Eicar-Test-Signature')
+>>> import os
+>>> os.remove('/tmp/EICAR')
+>>> os.remove('/tmp/NO_EICAR')
+>>> os.remove('/tmp/EICAR-éèô请收藏我们的网址')
 """
 
 
@@ -501,12 +503,7 @@ class _ClamdGeneric(object):
         try:
             response = bytes.decode(data).strip()
         except UnicodeDecodeError:
-            response = data.decode('UTF-8').encode('UTF-8', errors="replace").strip()
             response = data.strip()
-            try:
-                pass
-            except UnicodeDecodeError:
-                response = data.strip()
 
         return response
 
