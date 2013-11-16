@@ -4,7 +4,8 @@ ARCHIVE=`python setup.py --fullname`
 
 
 test:
-	@python pyclamd.py
+	py.test -v
+	python pyclamd.py
 
 install:
 	@python setup.py install

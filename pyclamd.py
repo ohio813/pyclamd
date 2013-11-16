@@ -43,6 +43,7 @@
 #                            contscan_file, multiscan_file, and version.
 # 2013-04-21 v0.3.3 AN: - ClamdUnixSocket is now able to get unix socket name
 #                         from /etc/clamav/clamd.conf
+# 2013-11-16 v0.3.4 JB/AN: - Nasty encoding bug in scan_stream
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
@@ -65,6 +66,7 @@ Contributors :
  - TK :  Thomas Kastner - tk()underground8.com
  - TT :  Theodoropoulos Theodoros (TeD TeD) - sbujam()gmail.com
  - TKL : Thomas Kluyver - thomas () kluyver.me.uk
+ - JB :  Joe Brandt  - brandt.joe () gmail.com
 
 Licence : LGPL
 
@@ -118,7 +120,7 @@ True
 
 
 
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 # $Source$
 
 
@@ -442,9 +444,14 @@ class _ClamdGeneric(object):
                 chunk = chunks_left[:max_chunk_size]
                 chunks_left = chunks_left[max_chunk_size:]
 
-                size = bytes.decode(struct.pack('!L', len(chunk)))
-                self.clamd_socket.send(str.encode('{0}{1}'.format(size, chunk)))
+                #size = bytes.decode(struct.pack('!L', len(chunk)))
+                size = struct.pack('!L', len(chunk))
+                #self.clamd_socket.send(str.encode('{0}{1}'.format(size, chunk)))
+                #self.clamd_socket.send('{0}'.format(size) + chunk)
+                self.clamd_socket.send(size)
+                self.clamd_socket.send(chunk)
 
+            # Terminating stream
             self.clamd_socket.send(struct.pack('!L', 0))
                 
             
