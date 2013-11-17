@@ -19,8 +19,8 @@
 # CHANGELOG:
 # 2006-07-15 v0.1.1 AN: - released version
 # 2007-10-09 v0.2.0 PL: - fixed error with deprecated string exceptions
-#					    - added optional timeout to sockets to avoid blocking 
-#						  operations
+#			- added optional timeout to sockets to avoid blocking 
+#			  operations
 # 2010-07-11 v0.2.1 AN: - change all raise exception (was deprecated), license 
 #						  change to LGPL
 # 2010-07-12 v0.2.2 TK: - PEP8 compliance
@@ -120,7 +120,7 @@ True
 
 
 
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 # $Source$
 
 
@@ -620,10 +620,12 @@ class ClamdUnixSocket(_ClamdGeneric):
         """
         internal use only
         """
-        try:
-            self.clamd_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-            self.clamd_socket.connect(self.unix_socket)
+        self.clamd_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        if not self.timeout is None:
             self.clamd_socket.settimeout(self.timeout)
+
+        try:
+            self.clamd_socket.connect(self.unix_socket)
         except socket.error:
             raise ConnectionError('Could not reach clamd using unix socket ({0})'.format((self.unix_socket)))
         return
@@ -665,11 +667,11 @@ class ClamdNetworkSocket(_ClamdGeneric):
         """
         internal use only
         """
-        try:
-            self.clamd_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.clamd_socket.connect((self.host, self.port))
+        self.clamd_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if not self.timeout is None:
             self.clamd_socket.settimeout(self.timeout)
-
+        try:
+            self.clamd_socket.connect((self.host, self.port))
         except socket.error:
             raise ConnectionError('Could not reach clamd using network ({0}, {1})'.format(self.host, self.port))
 
