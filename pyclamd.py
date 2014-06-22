@@ -44,7 +44,7 @@
 # 2013-04-21 v0.3.3 AN: - ClamdUnixSocket is now able to get unix socket name
 #                         from /etc/clamav/clamd.conf
 # 2013-11-16 v0.3.4 JB/AN: - Nasty encoding bug in scan_stream
-# 2014-06-22 v0.3.5 JS/AN: - correction in assert for filename (change to basestring)
+# 2014-06-22 v0.3.6 JS/AN: - correction in assert for filename (change to basestring)
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
@@ -68,7 +68,7 @@ Contributors :
  - TT :  Theodoropoulos Theodoros (TeD TeD) - sbujam()gmail.com
  - TKL : Thomas Kluyver - thomas () kluyver.me.uk
  - JB :  Joe Brandt  - brandt.joe () gmail.com
-
+ - JS : Joni Salonen - joni.salonen () qindel.com
 Licence : LGPL
 
 Usage :
@@ -121,7 +121,7 @@ True
 
 
 
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 # $Source$
 
 
