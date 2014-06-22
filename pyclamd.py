@@ -44,6 +44,7 @@
 # 2013-04-21 v0.3.3 AN: - ClamdUnixSocket is now able to get unix socket name
 #                         from /etc/clamav/clamd.conf
 # 2013-11-16 v0.3.4 JB/AN: - Nasty encoding bug in scan_stream
+# 2014-06-22 v0.3.5 JS/AN: - correction in assert for filename (change to basestring)
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
@@ -284,7 +285,7 @@ class _ClamdGeneric(object):
           - socket.timeout: if timeout has expired
         """
 
-        assert isinstance(file, str), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
+        assert isinstance(file, basestring), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
 
         try:
             self._init_socket()
@@ -334,7 +335,7 @@ class _ClamdGeneric(object):
         May raise:
           - ConnectionError: in case of communication problem
         """
-        assert isinstance(file, str), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
+        assert isinstance(file, basestring), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
 
         try:
             self._init_socket()
@@ -386,7 +387,7 @@ class _ClamdGeneric(object):
         May raise:
           - ConnectionError: in case of communication problem
         """
-        assert isinstance(file, str), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
+        assert isinstance(file, basestring), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
 
         try:
             self._init_socket()
@@ -554,7 +555,7 @@ class _ClamdGeneric(object):
         msg = msg.strip()
         filename = msg.split(': ')[0]
         left = msg.split(': ')[1:]
-        if isinstance(left, str):
+        if isinstance(left, basestring):
             result = left
         else:
             result = ": ".join(left)
@@ -601,7 +602,7 @@ class ClamdUnixSocket(_ClamdGeneric):
                 else:
                     raise ConnectionError('Could not find clamd unix socket from /etc/clamav/clamd.conf')
         
-        assert isinstance(filename, str), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
+        assert isinstance(filename, basestring), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
         assert isinstance(timeout, (float, int)) or timeout is None, 'Wrong type for [timeout], should be either None or a float [was {0}]'.format(type(timeout))
 
         _ClamdGeneric.__init__(self)
