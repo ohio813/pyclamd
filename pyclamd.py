@@ -682,6 +682,25 @@ class ClamdNetworkSocket(_ClamdGeneric):
 
 ############################################################################
 
+def ClamdAgnostic():
+    """
+    Tries to connect to clamd using ClamdUnixSocket or if it fails, tries
+    with ClamdNetworkSocket and return the corresponding object.
+    Of course, it tries to connect with default settings...
+    """
+    try:
+        # Create object for using unix socket
+        cd = ClamdUnixSocket()
+    except ConnectionError:
+        # if failed, test for network socket
+        try:
+            cd = ClamdNetworkSocket()
+        except ConnectionError:
+            raise ValueError, "could not connect to clamd server either by unix or network socket"
+    return cd
+
+############################################################################
+
 
 # Backwards compatibility API ##############################################
 

@@ -2,21 +2,13 @@ pyClamd is a portable Python module to use the ClamAV antivirus engine on
 Windows, Linux, MacOSX and other platforms. It requires a running instance of 
 the clamd daemon.
 
-This is a slightly improved version of pyClamd v0.1.1 created by Alexandre 
-Norman and published on his website: http://xael.org/norman/python/pyclamd/
-
-website for v0.2.0: http://www.decalage.info/en/python/pyclamd  
-
-Improvements from version 0.1.1 to 0.2.0:
-
-    * added option to set a timeout on scans
-    * fixed warning due to string exceptions with Python 2.5
 
 License:
 pyClamd is released as open-source software under the GPLv2 license.
 
-Download:
-see http://www.decalage.info/en/python/pyclamd
+Download: 
+see http://xael.org/norman/python/pyclamd/
+
 
 
 How to install clamd:
@@ -47,30 +39,42 @@ How to use pyClamd:
 See source code or Alexandre Norman's website: 
 http://xael.org/norman/python/pyclamd/
 
+
 Here is an example on Unix:
 
-$ python
+
 >>> import pyclamd
->>> cd = pyclamd.ClamdUnixSocket()
->>> try:
-...     cd.ping()
-... except pyclamd.ConnectionError:
-...     cd = pyclamd.ClamdNetworkSocket()
-...     cd.ping()
-... 
+>>> # Create object for using unix socket or network socket
+>>> cd = pyclamd.ClamdAgnostic()
+>>> # test if server is OK
+>>> cd.ping()
 True
->>> cd.version().split()[0]
-'ClamAV'
+>>> # print version
+>>> print "Version : \n{0}".format(cd.version())
+Version : 
+ClamAV 0.98.1/19122/Sun Jun 22 08:24:11 2014
+>>> # force a db reload
 >>> cd.reload()
-'RELOADING'
->>> cd.stats().split()[0]
-'POOLS:'
+u'RELOADING'
+>>> # print stats
+>>> print "{0}".format(cd.stats())
+POOLS: 1
+
+STATE: VALID PRIMARY
+THREADS: live 1  idle 0 max 12 idle-timeout 30
+QUEUE: 0 items
+	STATS 0.000048
+MEMSTATS: heap 6.098M mmap 0.000M used 3.770M free 2.337M releasable 0.132M pools 1 pools_used 268.122M pools_total 268.136M
+END
+>>> # write test file with EICAR test string
 >>> open('/tmp/EICAR','w').write(cd.EICAR())
+>>> # write test file without virus pattern
 >>> open('/tmp/NO_EICAR','w').write('no virus in this file')
->>> cd.scan_file('/tmp/EICAR')
-{'/tmp/EICAR': ('FOUND', 'Eicar-Test-Signature')}
->>> cd.scan_file('/tmp/NO_EICAR') is None
-True
->>> cd.scan_stream(cd.EICAR())
-{'stream': ('FOUND', 'Eicar-Test-Signature')}
->>> 
+>>> # scan files
+>>> print "{0}".format(cd.scan_file('/tmp/EICAR'))
+{u'/tmp/EICAR': ('FOUND', 'Eicar-Test-Signature')}
+>>> print "{0}".format(cd.scan_file('/tmp/NO_EICAR'))
+None
+>>> # scan a stream
+>>> print "{0}".format(cd.scan_stream(cd.EICAR()))
+{u'stream': ('FOUND', 'Eicar-Test-Signature')}

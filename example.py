@@ -3,18 +3,12 @@
 
 import pyclamd
 
-# Create object for using unix socket
-cd = pyclamd.ClamdUnixSocket()
-try:
-    # test if server is reachable
-    cd.ping()
-except pyclamd.ConnectionError:
-    # if failed, test for network socket
-    cd = pyclamd.ClamdNetworkSocket()
-    try:
-        cd.ping()
-    except pyclamd.ConnectionError:
-        raise ValueError, "could not connect to clamd server either by unix or network socket"
+# Create object for using unix socket or network socket
+cd = pyclamd.ClamdAgnostic()
+
+# test if server is OK
+cd.ping()
+
 
 # print version
 print "Version : \n{0}\n".format(cd.version())
