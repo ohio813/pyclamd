@@ -25,6 +25,7 @@ license:
 
 register:
 	@python setup.py register
+	@python setup.py sdist upload
 
 doc:
 	@pydoc -w pyclamd
