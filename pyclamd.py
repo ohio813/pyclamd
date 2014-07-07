@@ -47,13 +47,15 @@
 # 2014-06-22 v0.3.6 JS/AN: - correction in assert for filename (change to basestring)
 # 2014-06-23 v0.3.7 AN: - correction in README.txt and example.py
 #                       - adding pyclamd.ClamdAgnostic()
+# 2014-07-06 v0.3.8 AN: - License clarification (use of LGPLv3+)
+# 2014-07-06 v0.3.9 SK/AN: - Bug correction + setup.py improvment for building
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
 #   protect it somehow from on-access AV, inside a ZIP/GZip archive isn't enough)
 # - use SESSION/END commands to launch several scans in one session
 #   (for example provide session mode in a Clamd class)
-# - add support for RAWSCAN and MULTISCAN commands ?
+# - add support for RAWSCAN commands ?
 # ? Maybe use os.abspath to ensure scan_file uses absolute paths for files
 #------------------------------------------------------------------------------
 # Documentation : http://www.clamav.net/doc/latest/html/node28.html
@@ -65,13 +67,14 @@ pyclamd.py
 
 Author : Alexandre Norman - norman()xael.org
 Contributors :
- - PL :  Philippe Lagadec - philippe.lagadec()laposte.net
- - TK :  Thomas Kastner - tk()underground8.com
- - TT :  Theodoropoulos Theodoros (TeD TeD) - sbujam()gmail.com
- - TKL : Thomas Kluyver - thomas () kluyver.me.uk
  - JB :  Joe Brandt  - brandt.joe () gmail.com
  - JS : Joni Salonen - joni.salonen () qindel.com
-Licence : LGPL
+ - PL :  Philippe Lagadec - philippe.lagadec()laposte.net
+ - SK : Scott Kitterman - debian () kitterman.com
+ - TK :  Thomas Kastner - tk()underground8.com
+ - TKL : Thomas Kluyver - thomas () kluyver.me.uk
+ - TT :  Theodoropoulos Theodoros (TeD TeD) - sbujam()gmail.com
+Licence : LGLPv3+
 
 Usage :
 
@@ -121,9 +124,9 @@ True
 >>> os.remove('/tmp/EICAR-éèô请收藏我们的网址')
 """
 
+__version__ = "0.3.9"
 
 
-__version__ = "0.3.7"
 # $Source$
 
 
@@ -698,7 +701,7 @@ def ClamdAgnostic():
         try:
             cd = ClamdNetworkSocket()
         except ConnectionError:
-            raise ValueError, "could not connect to clamd server either by unix or network socket"
+            raise ValueError("could not connect to clamd server either by unix or network socket")
     return cd
 
 ############################################################################

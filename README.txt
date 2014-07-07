@@ -4,7 +4,7 @@ the clamd daemon.
 
 
 License:
-pyClamd is released as open-source software under the GPLv2 license.
+pyClamd is released as open-source software under the LGPLv3 (or later) license.
 
 Download: 
 see http://xael.org/norman/python/pyclamd/

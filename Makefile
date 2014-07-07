@@ -19,13 +19,16 @@ archive: test doc
 web:
 	@cp dist/$(ARCHIVE).tar.gz web/
 	@m4 -DVERSION=$(VERSION) -DMD5SUM=$(shell md5sum dist/pyClamd-$(VERSION).tar.gz |cut -d' ' -f1) -DDATE=$(shell date +%Y-%m-%d) web/index.gtm.m4 > web/index.gtm
+	@(cd /home/xael/ESPACE_KM/xael.org/web/xael.org/www.xael.org/html/norman/python ; make)
+	@(cd /home/xael/ESPACE_KM/xael.org/web/xael.org/www.xael.org/html/norman/ ; make ftp-all)
+
 
 license:
-	@python setup.py --license
+	@python setup.py --classifiers |grep ^License
 
-register:
+register: archive
 	@python setup.py register
-	@python setup.py sdist upload
+	@python setup.py upload
 
 doc:
 	@pydoc -w pyclamd
