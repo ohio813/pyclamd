@@ -28,9 +28,9 @@ license:
 
 register: archive
 	@python setup.py register
-	@python setup.py upload
+	@python setup.py sdist upload
 
 doc:
 	@pydoc -w pyclamd
 
-.PHONY: web
+.PHONY: web archive
