@@ -49,6 +49,7 @@
 #                       - adding pyclamd.ClamdAgnostic()
 # 2014-07-06 v0.3.8 AN: - License clarification (use of LGPLv3+)
 # 2014-07-06 v0.3.9 SK/AN: - Bug correction + setup.py improvment for building
+# 2014-07-06 v0.3.10 SK/AN: - Bug correction with python3 bytes stream
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
@@ -80,7 +81,7 @@ Usage :
 
 Test strings :
 ^^^^^^^^^^^^
-
+>>> import sys
 >>> import pyclamd
 >>> try:
 ...     cd = pyclamd.ClamdUnixSocket()
@@ -100,7 +101,7 @@ ClamAV
 RELOADING
 >>> print(cd.stats().split()[0])
 POOLS:
->>> void = open('/tmp/EICAR','w').write(cd.EICAR())
+>>> void = open('/tmp/EICAR','wb').write(cd.EICAR())
 >>> void = open('/tmp/NO_EICAR','w').write('no virus in this file')
 >>> cd.scan_file('/tmp/EICAR')['/tmp/EICAR']
 ('FOUND', 'Eicar-Test-Signature')
@@ -112,7 +113,7 @@ True
 >>> directory['/tmp/EICAR']
 ('FOUND', 'Eicar-Test-Signature')
 >>> # Testing encoding with non latin characters (Chinese ideograms taken from random site, don't know what it mean, sorry)
->>> void = open('/tmp/EICAR-éèô请收藏我们的网址','w').write(cd.EICAR())
+>>> void = open('/tmp/EICAR-éèô请收藏我们的网址','wb').write(cd.EICAR())
 >>> r = cd.scan_file('/tmp/EICAR-éèô请收藏我们的网址')
 >>> print(list(r.keys())[0])
 /tmp/EICAR-éèô请收藏我们的网址
@@ -124,12 +125,13 @@ True
 >>> os.remove('/tmp/EICAR-éèô请收藏我们的网址')
 """
 
-__version__ = "0.3.9"
+__version__ = "0.3.10"
 
 
 # $Source$
 
 
+import sys
 import socket
 import struct
 import base64
@@ -143,6 +145,15 @@ class BufferTooLongError(ValueError):
 class ConnectionError(socket.error):
     """Class for errors communication with clamd"""
 
+
+# Python 2/3 compatibility
+try:
+    basestring  # attempt to evaluate basestring
+    def isstr(s):
+        return isinstance(s, basestring)
+except NameError:
+    def isstr(s):
+        return isinstance(s, str)
 
 
 ############################################################################
@@ -158,8 +169,8 @@ class _ClamdGeneric(object):
         returns Eicar test string
         """
         # Eicar test string (encoded for skipping virus scanners)
-        
-        EICAR = base64.b64decode('WDVPIVAlQEFQWzRcUFpYNTQoUF4pN0NDKTd9JEVJQ0FSLVNUQU5EQVJELUFOVElWSVJVUy1URVNU\nLUZJTEUhJEgrSCo=\n'.encode('ascii')).decode('ascii')
+        # Return a str with python2 and bytes with python3
+        EICAR = base64.b64decode('WDVPIVAlQEFQWzRcUFpYNTQoUF4pN0NDKTd9JEVJQ0FSLVNUQU5EQVJELUFOVElWSVJVUy1URVNU\nLUZJTEUhJEgrSCo=\n'.encode('ascii'))
         return EICAR
         
 
@@ -290,7 +301,7 @@ class _ClamdGeneric(object):
           - socket.timeout: if timeout has expired
         """
 
-        assert isinstance(file, basestring), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
+        assert isstr(file), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
 
         try:
             self._init_socket()
@@ -340,7 +351,7 @@ class _ClamdGeneric(object):
         May raise:
           - ConnectionError: in case of communication problem
         """
-        assert isinstance(file, basestring), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
+        assert isstr(file), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
 
         try:
             self._init_socket()
@@ -392,7 +403,7 @@ class _ClamdGeneric(object):
         May raise:
           - ConnectionError: in case of communication problem
         """
-        assert isinstance(file, basestring), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
+        assert isstr(file), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
 
         try:
             self._init_socket()
@@ -440,6 +451,13 @@ class _ClamdGeneric(object):
           - ConnectionError: in case of communication problem
         """
         try:
+            if sys.version_info[0] <= 2:
+                # Python2
+                assert isstr(buffer_to_test), 'Wrong type fom [buffer_to_test], should be str [was {0}]'.format(type(buffer_to_test))
+            else:
+                # Python3
+                assert isinstance(buffer_to_test, bytes) or isinstance(buffer_to_test, bytearray), 'Wrong type fom [buffer_to_test], should be bytes or bytearray [was {0}]'.format(type(buffer_to_test))
+            
             self._init_socket()
             self._send_command('INSTREAM')
 
@@ -560,7 +578,7 @@ class _ClamdGeneric(object):
         msg = msg.strip()
         filename = msg.split(': ')[0]
         left = msg.split(': ')[1:]
-        if isinstance(left, basestring):
+        if isstr(left):
             result = left
         else:
             result = ": ".join(left)
@@ -607,7 +625,7 @@ class ClamdUnixSocket(_ClamdGeneric):
                 else:
                     raise ConnectionError('Could not find clamd unix socket from /etc/clamav/clamd.conf')
         
-        assert isinstance(filename, basestring), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
+        assert isstr(filename), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
         assert isinstance(timeout, (float, int)) or timeout is None, 'Wrong type for [timeout], should be either None or a float [was {0}]'.format(type(timeout))
 
         _ClamdGeneric.__init__(self)

@@ -3,9 +3,15 @@ VERSION=`python setup.py --version`
 ARCHIVE=`python setup.py --fullname`
 
 
-test:
-	py.test -v
-	python pyclamd.py
+testv2:
+	py.test-2.7 -v
+	python2 pyclamd.py
+	python2 example.py
+
+testv3:
+	py.test-3.2 -v
+	python3 pyclamd.py
+	python3 example.py
 
 install:
 	@python setup.py install
