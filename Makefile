@@ -37,6 +37,8 @@ license:
 register: archive
 	@python setup.py register
 	@python setup.py sdist upload
+	@python setup.py bdist_egg upload
+	@python3 setup.py bdist_egg upload
 
 doc:
 	@pydoc -w pyclamd/pyclamd.py

@@ -1,8 +1,10 @@
 
-from distutils.core import setup, Extension
+#from distutils.core import setup, Extension
 
-pyclamd = Extension('pyclamd',
-                    sources = ['pyclamd.py'])
+#pyclamd = Extension('pyclamd',
+#                    sources = ['pyclamd.py'])
+
+from setuptools import setup
 
 # Install : python setup.py install
 # Register : python setup.py register

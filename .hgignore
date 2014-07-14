@@ -8,6 +8,8 @@ dist/
 *.log
 eicar.com
 Thumbs.db
+pyClamd.egg-info/*
+build/*
 #*#
 *\#
 
