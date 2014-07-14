@@ -39,6 +39,6 @@ register: archive
 	@python setup.py sdist upload
 
 doc:
-	@pydoc -w pyclamd
+	@pydoc -w pyclamd/pyclamd.py
 
 .PHONY: web archive

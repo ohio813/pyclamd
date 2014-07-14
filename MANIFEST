@@ -1,7 +1,7 @@
 README.txt
-__init__.py
 example.py
-pyclamd.py
+pyclamd/pyclamd.py
+pyclamd/__init__.py
 setup.py
 COPYING
 COPYING.LESSER

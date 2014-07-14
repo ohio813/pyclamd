@@ -440,7 +440,10 @@ class _ClamdGeneric(object):
         """
         Scan a buffer
 
-        buffer_to_test (string): buffer to scan
+        on Python2.X :
+          - buffer_to_test (string): buffer to scan
+        on Python3.X :
+          - buffer_to_test (bytes or bytearray): buffer to scan
 
         return either:
           - (dict): {filename1: "virusname"}
