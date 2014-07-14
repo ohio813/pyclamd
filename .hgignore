@@ -6,6 +6,7 @@ dist/
 *.aux
 *.toc
 *.log
+eicar.com
 Thumbs.db
 #*#
 *\#

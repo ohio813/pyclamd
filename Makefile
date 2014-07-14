@@ -5,13 +5,15 @@ ARCHIVE=`python setup.py --fullname`
 
 testv2:
 	py.test-2.7 -v
-	python2 pyclamd.py
+	python2 pyclamd/pyclamd.py
 	python2 example.py
 
 testv3:
 	py.test-3.2 -v
-	python3 pyclamd.py
+	python3 pyclamd/pyclamd.py
 	python3 example.py
+
+test: testv2 testv3
 
 install:
 	@python setup.py install

@@ -17,7 +17,7 @@ except ImportError as x:
 setup (name = 'pyClamd',
        version = pyclamd.__version__,
        download_url = 'http://xael.org/norman/python/pyclamd/',
-       package_dir={'pyclamd': ''},
+       package_dir={'pyclamd': 'pyclamd'},
        packages=['pyclamd'],
 
        license ='License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
