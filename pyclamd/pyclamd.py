@@ -50,6 +50,7 @@
 # 2014-07-06 v0.3.8 AN: - License clarification (use of LGPLv3+)
 # 2014-07-06 v0.3.9 SK/AN: - Bug correction + setup.py improvment for building
 # 2014-07-06 v0.3.10 SK/AN: - Bug correction with python3 bytes stream
+# 2015-03-14 v0.3.14 AN : - Bug correction for clamd.conf default path
 #------------------------------------------------------------------------------
 # TODO:
 # - improve tests for Win32 platform (avoid to write EICAR file to disk, or
@@ -125,12 +126,13 @@ True
 >>> os.remove('/tmp/EICAR-éèô请收藏我们的网址')
 """
 
-__version__ = "0.3.10"
+__version__ = "0.3.14"
 
 
 # $Source$
 
 
+import os
 import sys
 import socket
 import struct
@@ -139,7 +141,7 @@ import base64
 ############################################################################
 
 class BufferTooLongError(ValueError):
-    """Class for errors with clamd using INSTREAM with a buffer lenght > StreamMaxLength in /etc/clamav/clamd.conf"""
+    """Class for errors with clamd using INSTREAM with a buffer lenght > StreamMaxLength in /etc/clamav/clamd.conf or /etc/clamd.conf"""
 
 
 class ConnectionError(socket.error):
@@ -464,7 +466,7 @@ class _ClamdGeneric(object):
             self._init_socket()
             self._send_command('INSTREAM')
 
-            max_chunk_size = 1024 # MUST be < StreamMaxLength in /etc/clamav/clamd.conf
+            max_chunk_size = 1024 # MUST be < StreamMaxLength in /etc/clamav/clamd.conf or /etc/clamd.conf
 
             chunks_left = buffer_to_test
             while len(chunks_left)>0:
@@ -610,13 +612,19 @@ class ClamdUnixSocket(_ClamdGeneric):
         """
         Unix Socket Class initialisation
         
-        filename (string) : unix socket filename or None to get the socket from /etc/clamav/clamd.conf
+        filename (string) : unix socket filename or None to get the socket from /etc/clamav/clamd.conf or /etc/clamd.conf
         timeout (float or None) : socket timeout
         """
 
         # try to get unix socket from clamd.conf
         if filename is None:
-            with open('/etc/clamav/clamd.conf', 'r') as conffile:
+            for clamdpath in ['/etc/clamav/clamd.conf', '/etc/clamd.conf']:
+                if os.path.isfile(clamdpath):
+                    break
+            else:
+                raise ConnectionError('Could not find clamd unix socket from /etc/clamav/clamd.conf or /etc/clamd.conf')
+            
+            with open(clamdpath, 'r') as conffile:
                 for line in conffile.readlines():
                     try:
                         if line.strip().split()[0] == 'LocalSocket':
@@ -626,7 +634,7 @@ class ClamdUnixSocket(_ClamdGeneric):
                         pass
                             
                 else:
-                    raise ConnectionError('Could not find clamd unix socket from /etc/clamav/clamd.conf')
+                    raise ConnectionError('Could not find clamd unix socket from /etc/clamav/clamd.conf or /etc/clamd.conf')
         
         assert isstr(filename), 'Wrong type for [file], should be a string [was {0}]'.format(type(file))
         assert isinstance(timeout, (float, int)) or timeout is None, 'Wrong type for [timeout], should be either None or a float [was {0}]'.format(type(timeout))
